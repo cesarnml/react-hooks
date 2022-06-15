@@ -6,6 +6,8 @@
 
 ### Lesson 01 - useState: greeting
 
+- Didn't learn anything new
+
 ### Lesson 02 - useEffect: persisting state
 
 ### Lesson 03 - lifting state
