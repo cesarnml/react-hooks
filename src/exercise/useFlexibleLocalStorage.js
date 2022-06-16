@@ -10,7 +10,7 @@ export const useFlexibleLocalStorage = ({itemValue, itemKey}) => {
     }
   }
 
-  const [value, setValue] = React.useState(() => getValue())
+  const [value, setValue] = React.useState(getValue)
 
   React.useEffect(() => {
     if (typeof value !== 'string') {
