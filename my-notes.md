@@ -10,6 +10,9 @@
 
 ### Lesson 02 - useEffect: persisting state
 
+- *React's useState hook allows you to pass a function instead of the actual value, and then it will only call that function to get the state value when the component is rendered the first time*
+-
+
 ### Lesson 03 - lifting state
 
 ### Lesson 04 - useState: tic tac toe
