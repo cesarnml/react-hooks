@@ -1,26 +1,32 @@
 import React from 'react'
 
-export const useFlexibleLocalStorage = ({itemValue, itemKey}) => {
+export const useFlexibleLocalStorage = ({
+  key,
+  initialValue = '',
+  serialize = JSON.stringify,
+  deserialize = JSON.parse,
+}) => {
   const getValue = () => {
-    const localValue = localStorage.getItem(itemKey)
-    if (localValue !== 'undefined' && typeof localValue !== 'string') {
-      return JSON.parse(localValue)
+    const localValue = localStorage.getItem(key)
+    if (localValue) {
+      return deserialize(localValue)
     } else {
-      return localValue || itemValue
+      return typeof initialValue === 'function' ? initialValue() : initialValue
     }
   }
 
   const [value, setValue] = React.useState(getValue)
 
-  React.useEffect(() => {
-    if (typeof value !== 'string') {
-      localStorage.setItem(itemKey, JSON.stringify(value))
-    } else {
-      localStorage.setItem(itemKey, value)
-    }
+  const prevKeyRef = React.useRef(key)
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(value)])
+  React.useEffect(() => {
+    const prevKey = prevKeyRef.current
+    if (prevKey !== key) {
+      localStorage.removeItem(prevKey)
+    }
+    prevKeyRef.current = key
+    localStorage.setItem(key, serialize(value))
+  }, [key, serialize, value])
 
   return [value, setValue]
 }

@@ -16,8 +16,8 @@ function Greeting({initialName = ''}) {
   // const [name, setName] = useLocalStorageState(initialName)
   // EXTRA CREDIT #4 💯
   const [name, setName] = useFlexibleLocalStorage({
-    itemKey: 'name',
-    itemValue: initialName,
+    key: 'name',
+    initialValue: initialName,
   })
   // 🐨 Here's where you'll use `React.useEffect`.
   // The callback should set the `name` in localStorage.
