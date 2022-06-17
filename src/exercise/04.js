@@ -1,29 +1,30 @@
 // useState: tic tac toe
 // http://localhost:3000/isolated/exercise/04.js
-
+import {useFlexibleLocalStorage} from './useFlexibleLocalStorage'
 import * as React from 'react'
 
-function Board() {
+function Board({step, setStep, history, setHistory}) {
   // 🐨 squares is the state for this component. Add useState for squares
   // EXTRA CREDIT #1 💯
-  const retrieveInitialSquares = () => {
-    const savedSquares = localStorage.getItem('squares')
-    if (savedSquares) {
-      return JSON.parse(savedSquares)
-    } else {
-      return Array(9).fill(null)
-    }
-  }
+  // const retrieveInitialSquares = () => {
+  //   const savedSquares = localStorage.getItem('squares')
+  //   if (savedSquares) {
+  //     return JSON.parse(savedSquares)
+  //   } else {
+  //     return Array(9).fill(null)
+  //   }
+  // }
 
-  const [squares, setSquares] = React.useState(retrieveInitialSquares)
-
+  // const [squares, setSquares] = React.useState(retrieveInitialSquares)
+  // EXTRA CREDIT #2 💯
+  const squares = history[step]
   const nextValue = calculateNextValue(squares)
   const winner = calculateWinner(squares)
   const status = calculateStatus(winner, squares, nextValue)
 
-  React.useEffect(() => {
-    localStorage.setItem('squares', JSON.stringify(squares))
-  })
+  // React.useEffect(() => {
+  //   localStorage.setItem('squares', JSON.stringify(squares))
+  // })
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
   // - winner ('X', 'O', or null)
@@ -37,9 +38,12 @@ function Board() {
     if (winner || squares[square]) {
       return
     } else {
-      setSquares(prev =>
-        prev.map((value, index) => (index === square ? nextValue : value)),
-      )
+      const previousHistory = history.slice(0, step + 1)
+      setHistory([
+        ...previousHistory,
+        squares.map((value, index) => (index === square ? nextValue : value)),
+      ])
+      setStep(prev => prev + 1)
     }
     // 🐨 first, if there's already winner or there's already a value at the
     // given square index (like someone clicked a square that's already been
@@ -60,7 +64,8 @@ function Board() {
   function restart() {
     // 🐨 reset the squares
     // 💰 `Array(9).fill(null)` will do it!
-    setSquares(Array(9).fill(null))
+    setHistory([Array(9).fill(null)])
+    setStep(0)
   }
 
   function renderSquare(i) {
@@ -98,10 +103,41 @@ function Board() {
 }
 
 function Game() {
+  const [history, setHistory] = useFlexibleLocalStorage({
+    key: 'history',
+    initialValue: [Array(9).fill(null)],
+  })
+  const [step, setStep] = useFlexibleLocalStorage({
+    key: 'step',
+    initialValue: 0,
+  })
   return (
     <div className="game">
       <div className="game-board">
-        <Board />
+        <Board
+          step={step}
+          setStep={setStep}
+          history={history}
+          setHistory={setHistory}
+        />
+      </div>
+      <div>
+        {Array(history.length)
+          .fill(null)
+          .map((value, index) => {
+            return (
+              <div key={index}>
+                <span>{index + 1}.</span>
+                <button disabled={index == step} onClick={() => setStep(index)}>
+                  {index === 0
+                    ? `Go to game start ${index === step ? '(current)' : ''}`
+                    : `Go to move ${index} ${
+                        index === step ? '(current)' : ''
+                      }`}
+                </button>
+              </div>
+            )
+          })}
       </div>
     </div>
   )
