@@ -19,6 +19,8 @@
 
 ### Lesson 03 - lifting state
 
+- Didn't learn anything new
+
 ### Lesson 04 - useState: tic tac toe
 
 ### Lesson 05 - useRef and useState: DOM interaction
