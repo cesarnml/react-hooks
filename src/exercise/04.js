@@ -121,14 +121,19 @@ function Game() {
           setHistory={setHistory}
         />
       </div>
-      <div>
+      <div style={{marginLeft: 30}}>
         {Array(history.length)
           .fill(null)
           .map((value, index) => {
             return (
               <div key={index}>
-                <span>{index + 1}.</span>
-                <button disabled={index == step} onClick={() => setStep(index)}>
+                <span style={{color: index === step ? 'gray' : 'black'}}>
+                  {index + 1}.
+                </span>{' '}
+                <button
+                  disabled={index === step}
+                  onClick={() => setStep(index)}
+                >
                   {index === 0
                     ? `Go to game start ${index === step ? '(current)' : ''}`
                     : `Go to move ${index} ${
